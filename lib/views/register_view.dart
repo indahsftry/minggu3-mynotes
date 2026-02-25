@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'verify_email_view.dart';
 
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
@@ -9,8 +10,15 @@ class RegisterView extends StatefulWidget {
 }
 
 class _RegisterViewState extends State<RegisterView> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +30,7 @@ class _RegisterViewState extends State<RegisterView> {
           children: [
             TextField(
               controller: emailController,
+              keyboardType: TextInputType.emailAddress,
               decoration: const InputDecoration(labelText: "Email"),
             ),
             const SizedBox(height: 16),
@@ -34,16 +43,29 @@ class _RegisterViewState extends State<RegisterView> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                    email: emailController.text.trim(),
-                    password: passwordController.text.trim(),
-                  );
+                  final credential = await FirebaseAuth.instance
+                      .createUserWithEmailAndPassword(
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
+                      );
+
+                  // 🔥 KIRIM EMAIL VERIFICATION
+                  await credential.user?.sendEmailVerification();
 
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Register Success")),
+                    const SnackBar(
+                      content: Text(
+                        "Register success! Verification email sent.",
+                      ),
+                    ),
                   );
 
-                  Navigator.pop(context); // balik ke login
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const VerifyEmailView(),
+                    ),
+                  );
                 } on FirebaseAuthException catch (e) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text(e.message ?? "Register Failed")),

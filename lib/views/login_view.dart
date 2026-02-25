@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'register_view.dart';
+import '../services/auth/auth_service.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -10,6 +9,7 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  final AuthService authService = AuthService();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -35,27 +35,27 @@ class _LoginViewState extends State<LoginView> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  final user = await authService.login(
                     email: emailController.text.trim(),
                     password: passwordController.text.trim(),
                   );
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("Login Success")),
-                  );
-                } on FirebaseAuthException catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.message ?? "Login Failed")),
-                  );
+
+                  if (user != null && user.emailVerified) {
+                    Navigator.pushReplacementNamed(context, '/notes');
+                  } else {
+                    Navigator.pushReplacementNamed(context, '/verify-email');
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text("Login Failed")));
                 }
               },
               child: const Text("Login"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RegisterView()),
-                );
+                Navigator.pushNamed(context, '/register');
               },
               child: const Text("Don't have an account? Register"),
             ),
