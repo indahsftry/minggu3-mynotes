@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "787914014083",
+    "firebase_url": "https://mynotes-c58ab-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "mynotes-c58ab",
+    "storage_bucket": "mynotes-c58ab.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787914014083:android:da1b06a595f8894462cab6",
+        "android_client_info": {
+          "package_name": "se.pixolity.mynotes"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_ZRGuQJ3LqzDmm_v1cPby2IfpQA8cRYY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
